@@ -24,6 +24,7 @@ struct Command {
 static struct Command commands[] = {
   { "help",      "Display this list of commands",        mon_help       },
   { "info-kern", "Display information about the kernel", mon_infokern   },
+  { "backtrace", "Displays stack backtrace information", mon_backtrace  },
 };
 #define NCOMMANDS (sizeof(commands)/sizeof(commands[0]))
 
@@ -59,11 +60,40 @@ mon_infokern(int argc, char **argv, struct Trapframe *tf)
 int
 mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 {
-  // Your code here.
+  // Your code here
+  uint32_t *ebp = (uint32_t *)read_ebp();
+
+  cprintf("Stack backtrace:\n");
+
+  // follow stack trace
+  while (*ebp != 0x0)
+  {
+    struct Eipdebuginfo info = {0};
+    uint32_t *eip  = &ebp[1]; // 1 address above ebp
+    uint32_t *args = &ebp[2]; // 2 addresses above ebp
+
+    // fetch function/file name and line num
+    debuginfo_eip(*eip, &info);
+
+    // print backtrace info for this level
+    cprintf(
+      "  ebp %08x eip %08x args %08x %08x %08x %08x %08x\n",
+      *ebp, *eip, args[0], args[1], args[2], args[3], args[4]
+    );
+
+    // print debug info for this level
+    cprintf(
+      "\t%s:%d: %.*s+%d\n",
+      info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name,
+      *eip - info.eip_fn_addr
+    );
+
+    // get next ebp (pointed to by ebp)
+    ebp = (uint32_t *)*ebp;
+  }
+
   return 0;
 }
-
-
 
 /***** Kernel monitor command interpreter *****/
 
@@ -115,7 +145,6 @@ monitor(struct Trapframe *tf)
 
   cprintf("Welcome to the JOS kernel monitor!\n");
   cprintf("Type 'help' for a list of commands.\n");
-
 
   while (1) {
     buf = readline("K> ");
