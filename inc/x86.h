@@ -32,6 +32,9 @@ static __inline uint32_t read_eflags(void) __attribute__((always_inline));
 static __inline void write_eflags(uint32_t eflags) __attribute__((always_inline));
 static __inline uint32_t read_ebp(void) __attribute__((always_inline));
 static __inline uint32_t read_esp(void) __attribute__((always_inline));
+static __inline uint32_t read_arg(uint32_t ebp, size_t n) __attribute__((always_inline));
+static __inline uint32_t read_pre_ebp(uint32_t) __attribute__((always_inline));
+static __inline uint32_t read_ret_eip(uint32_t) __attribute__((always_inline));
 static __inline void cpuid(uint32_t info, uint32_t *eaxp, uint32_t *ebxp, uint32_t *ecxp, uint32_t *edxp);
 static __inline uint64_t read_tsc(void) __attribute__((always_inline));
 
@@ -303,6 +306,50 @@ xchg(volatile uint32_t *addr, uint32_t newval)
                 "1" (newval) :
                 "cc");
   return result;
+}
+
+// Read argument n from stack frame at ebp
+static __inline uint32_t
+read_arg(uint32_t ebp, size_t n)
+{
+  uint32_t arg;
+  uint32_t offset = (n + 1) * 4;
+
+  __asm __volatile ("movl %2, %%eax\n\t;"
+                    "addl %1, %%eax\n\t;"
+                    "movl (%%eax), %0;"                   :
+                    "=r" (arg)                            :
+                    "g" (offset), "g" (ebp)               :
+                    "%eax");
+  return arg;
+}
+
+// Read previous ebp (previous stack frame)
+static __inline uint32_t
+read_pre_ebp(uint32_t cur_ebp)
+{
+  uint32_t pre_ebp;
+
+  __asm __volatile ("movl %1, %%eax\n\t;"
+                    "movl (%%eax), %0\n\t;"               :
+                    "=r" (pre_ebp)                        :
+                    "g" (cur_ebp)                         :
+                    "%eax");
+  return pre_ebp;
+}
+
+// Read caller's eip
+static __inline uint32_t
+read_ret_eip(uint32_t ebp)
+{
+  uint32_t ret_eip;
+  __asm __volatile ("movl %1, %%eax\n\t;"
+                    "movl 4(%%eax), %0\n\t;"              :
+                    "=r" (ret_eip)                        :
+                    "g" (ebp)                             :
+                    "%eax");
+
+  return ret_eip;
 }
 
 #endif /* !JOS_INC_X86_H */

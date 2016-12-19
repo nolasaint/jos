@@ -56,44 +56,51 @@ mon_infokern(int argc, char **argv, struct Trapframe *tf)
   return 0;
 }
 
-
+/*
+ * Prints backtrace info for the calling stack.
+ */
 int
 mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 {
   // Your code here
-  uint32_t *ebp = (uint32_t *)read_ebp();
+  uint32_t ebp = read_ebp();
 
   cprintf("Stack backtrace:\n");
 
   // follow stack trace
-  while (*ebp != 0x0)
-  {
-    struct Eipdebuginfo info = {0};
-    uint32_t *eip  = &ebp[1]; // 1 address above ebp
-    uint32_t *args = &ebp[2]; // 2 addresses above ebp
-
-    // fetch function/file name and line num
-    debuginfo_eip(*eip, &info);
+  while (ebp != 0) {
+    struct   Eipdebuginfo info;
+    uint32_t eip     = read_ret_eip(ebp),
+             args[5] = {
+      read_arg(ebp, 1),
+      read_arg(ebp, 2),
+      read_arg(ebp, 3),
+      read_arg(ebp, 4),
+      read_arg(ebp, 5)
+    };
 
     // print backtrace info for this level
     cprintf(
       "  ebp %08x eip %08x args %08x %08x %08x %08x %08x\n",
-      *ebp, *eip, args[0], args[1], args[2], args[3], args[4]
+      ebp, eip, args[0], args[1], args[2], args[3], args[4]
     );
+
+    debuginfo_eip(eip, &info);
 
     // print debug info for this level
     cprintf(
       "\t%s:%d: %.*s+%d\n",
       info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name,
-      *eip - info.eip_fn_addr
+      eip - info.eip_fn_addr
     );
 
-    // get next ebp (pointed to by ebp)
-    ebp = (uint32_t *)*ebp;
+    // get next stack frame
+    ebp = read_pre_ebp(ebp);
   }
 
   return 0;
 }
+
 
 /***** Kernel monitor command interpreter *****/
 
@@ -153,3 +160,4 @@ monitor(struct Trapframe *tf)
         break;
   }
 }
+
