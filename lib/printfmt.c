@@ -8,6 +8,8 @@
 #include <inc/stdarg.h>
 #include <inc/error.h>
 
+#include <inc/cga.h>
+
 /*
  * Space or zero padding and a field width are supported for the numeric
  * formats only.
@@ -229,6 +231,12 @@ process_precision:
       base = 16;
 number:
       printnum(putch, putdat, num, base, width, padc);
+      break;
+
+    // cga attribute
+    case '[':
+      num = getuint(&ap, lflag);
+      set_cga_attr((uint32_t) num);
       break;
 
     // escaped '%' character

@@ -7,6 +7,48 @@
 #include <kern/monitor.h>
 #include <kern/console.h>
 
+// Test the CGA attributes (lab 1 only)
+void
+test_cga_attributes(void)
+{
+  uint32_t i   = 0x0000;
+  int count    = 0;
+  int width    = 16;
+  int is_final = 0;
+
+  while (1)
+  {
+    if (count == width)
+    {
+      cprintf("\n");
+      count = 0;
+    }
+    else if (count != 0 && count != width)
+    {
+      cprintf(" ");
+    }
+
+    cprintf("%[%02x", i, i >> 8);
+    count++;
+
+    if (is_final)
+    {
+      break;
+    }
+    else
+    {
+      i += 0x0100;
+
+      if (i == 0xFF00)
+      {
+        is_final = 1;
+      }
+    }
+  }
+
+  cprintf("%[\n", 0x0000);
+}
+
 // Test the stack backtrace function (lab 1 only)
 void
 test_backtrace(int x)
@@ -37,6 +79,8 @@ i386_init(void)
 
   // Test the stack backtrace function (lab 1 only)
   test_backtrace(5);
+
+  test_cga_attributes();
 
   // Drop into the kernel monitor.
   while (1)

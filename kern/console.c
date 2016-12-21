@@ -6,6 +6,8 @@
 #include <inc/string.h>
 #include <inc/assert.h>
 
+#include <inc/cga.h> // TODO: when syscalls implemented, remove this
+
 #include <kern/console.h>
 
 static void cons_intr(int (*proc)(void));
@@ -162,9 +164,12 @@ cga_init(void)
 static void
 cga_putc(int c)
 {
-  // if no attribute given, then use black on white
-  if (!(c & ~0xFF))
-    c |= 0x0700;
+  // TODO: could supply some CGA attributes to this directly.
+  // if no attribute given, then use global cga attributes
+  if (!(c & ~0xFF)) {
+    //c |= 0x0700;
+    c |= (int) get_cga_attr();
+  }
 
   switch (c & 0xff) {
   case '\b':
