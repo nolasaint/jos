@@ -64,30 +64,30 @@
  */
 
 // Foreground color
-#define CGA_ATTR_FG_BLACK  0x0000
-#define CGA_ATTR_FG_BLUE   0x0100
-#define CGA_ATTR_FG_GREEN  0x0200
-#define CGA_ATTR_FG_CYAN   0x0300
-#define CGA_ATTR_FG_RED    0x0400
-#define CGA_ATTR_FG_PURPLE 0x0500
-#define CGA_ATTR_FG_GOLD   0x0600
-#define CGA_ATTR_FG_WHITE  0x0700
+#define CGA_ATTR_FG_BLACK  0x00 /* If BG is black, this will give white FG  */
+#define CGA_ATTR_FG_BLUE   0x01
+#define CGA_ATTR_FG_GREEN  0x02
+#define CGA_ATTR_FG_CYAN   0x03
+#define CGA_ATTR_FG_RED    0x04
+#define CGA_ATTR_FG_PURPLE 0x05
+#define CGA_ATTR_FG_GOLD   0x06
+#define CGA_ATTR_FG_WHITE  0x07
 
 // Emphasized text
-#define CGA_ATTR_EM        0x0800
+#define CGA_ATTR_EM        0x08
 
 // Background color
-#define CGA_ATTR_BG_BLACK  0x0000
-#define CGA_ATTR_BG_BLUE   0x1000
-#define CGA_ATTR_BG_GREEN  0x2000
-#define CGA_ATTR_BG_CYAN   0x3000
-#define CGA_ATTR_BG_RED    0x4000
-#define CGA_ATTR_BG_PURPLE 0x5000
-#define CGA_ATTR_BG_GOLD   0x6000
-#define CGA_ATTR_BG_WHITE  0x7000
+#define CGA_ATTR_BG_BLACK  0x00
+#define CGA_ATTR_BG_BLUE   0x10
+#define CGA_ATTR_BG_GREEN  0x20
+#define CGA_ATTR_BG_CYAN   0x30
+#define CGA_ATTR_BG_RED    0x40
+#define CGA_ATTR_BG_PURPLE 0x50
+#define CGA_ATTR_BG_GOLD   0x60
+#define CGA_ATTR_BG_WHITE  0x70
 
 // lib/cga.h
-uint32_t get_cga_attr(void);
-int      set_cga_attr(uint32_t attr);
+uint8_t get_cga_attr(void);
+void    set_cga_attr(uint8_t attr);
 
 #endif /* !JOS_INC_CGA_H */

@@ -167,8 +167,7 @@ cga_putc(int c)
   // TODO: could supply some CGA attributes to this directly.
   // if no attribute given, then use global cga attributes
   if (!(c & ~0xFF)) {
-    //c |= 0x0700;
-    c |= (int) get_cga_attr();
+    c |= (int)get_cga_attr() << 8;
   }
 
   switch (c & 0xff) {

@@ -11,7 +11,7 @@
 void
 test_cga_attributes(void)
 {
-  uint32_t i   = 0x0000;
+  uint8_t i   = 0x00;
   int count    = 0;
   int width    = 16;
   int is_final = 0;
@@ -28,7 +28,7 @@ test_cga_attributes(void)
       cprintf(" ");
     }
 
-    cprintf("%[%02x", i, i >> 8);
+    cprintf("%[%02x", i, i);
     count++;
 
     if (is_final)
@@ -37,16 +37,16 @@ test_cga_attributes(void)
     }
     else
     {
-      i += 0x0100;
+      i += 0x01;
 
-      if (i == 0xFF00)
+      if (i == 0xFF)
       {
         is_final = 1;
       }
     }
   }
 
-  cprintf("%[\n", 0x0000);
+  cprintf("%[\n", 0x00);
 }
 
 // Test the stack backtrace function (lab 1 only)

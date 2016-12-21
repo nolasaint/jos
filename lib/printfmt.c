@@ -236,7 +236,7 @@ number:
     // cga attribute
     case '[':
       num = getuint(&ap, lflag);
-      set_cga_attr((uint32_t) num);
+      set_cga_attr((uint8_t) num);
       break;
 
     // escaped '%' character
