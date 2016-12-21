@@ -6,60 +6,8 @@
 
 #include <kern/monitor.h>
 #include <kern/console.h>
-
-// Test the CGA attributes (lab 1 only)
-void
-test_cga_attributes(void)
-{
-  uint8_t i   = 0x00;
-  int count    = 0;
-  int width    = 16;
-  int is_final = 0;
-
-  while (1)
-  {
-    if (count == width)
-    {
-      cprintf("\n");
-      count = 0;
-    }
-    else if (count != 0 && count != width)
-    {
-      cprintf(" ");
-    }
-
-    cprintf("%[%02x", i, i);
-    count++;
-
-    if (is_final)
-    {
-      break;
-    }
-    else
-    {
-      i += 0x01;
-
-      if (i == 0xFF)
-      {
-        is_final = 1;
-      }
-    }
-  }
-
-  cprintf("%[\n", 0x00);
-}
-
-// Test the stack backtrace function (lab 1 only)
-void
-test_backtrace(int x)
-{
-  cprintf("entering test_backtrace %d\n", x);
-  if (x > 0)
-    test_backtrace(x-1);
-  else
-    mon_backtrace(0, 0, 0);
-  cprintf("leaving test_backtrace %d\n", x);
-}
+#include <kern/pmap.h>
+#include <kern/kclock.h>
 
 void
 i386_init(void)
@@ -77,10 +25,8 @@ i386_init(void)
 
   cprintf("6828 decimal is %o octal!\n", 6828);
 
-  // Test the stack backtrace function (lab 1 only)
-  test_backtrace(5);
-
-  test_cga_attributes();
+  // Lab 2 memory management initialization functions
+  mem_init();
 
   // Drop into the kernel monitor.
   while (1)
