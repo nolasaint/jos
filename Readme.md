@@ -57,21 +57,14 @@ Once user environments are implemented, this section will be updated.
 
 ## Branches
 
-There are 3 primary branches in this repository:
+There are 2 primary branches in this repository:
 
-* `master`
 * `development`
-* `labs/`
-
-### master
-
-The master branch contains only the source and build tools for the most up-to-date JOS revision. Note that the makefile still contains all targets and as such, builds such as `make grade LAB=1` will fail due to a lack of grading scripts.
+* `labs/*`
 
 ### development
 
 The development branch contains the source, build tools, and testing tools for the most up-to-date JOS revision.
-
-The development branch is occasionally merged into the master branch once major features are deemed fully implemented.
 
 ### labs/*
 
