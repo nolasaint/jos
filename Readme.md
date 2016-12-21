@@ -80,4 +80,4 @@ The lab branches contain the solutions to the lab exercises provided by MIT 6.82
 ## Changelog
 
 * **21 December 2016**
- * master is up-to-date with lab 1
+ * implemented lab 1
