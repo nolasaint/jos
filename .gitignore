@@ -16,8 +16,3 @@
 /myapi.key
 /conf/
 /out/
-
-# Ignore grading scripts in master branch
-/*.pyc
-/grade-lab?
-/tools/
