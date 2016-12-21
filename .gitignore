@@ -10,13 +10,9 @@
 /qemu.pcap.*
 /qemu.out
 /qemu.log
-/gradelib.pyc
 /lab?-handin.tar.gz
 /lab?/
 /sol?/
 /myapi.key
 /conf/
 /out/
-tools/*.pyc
-CODING
-
